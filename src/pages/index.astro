@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../components/MerLoader";
+---
+
+<Layout title="Home">
+  <mer-loader></mer-loader>
+  <h1>Welcome to Niche Spawner</h1>
+  <p>Generate business information fast!</p>
+  <button id="fetch-places-button">Fetch Places</button>
+  <script>
+    import { toggleLoader } from "../services/toggleLoader";
+    const fetchPlaces = async () => {
+      toggleLoader(true);
+      try {
+        const response = await fetch("http://127.0.0.1:3000/search", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            includedTypes: ["restaurant"],
+            location: "benidorm",
+          }),
+        });
+        const places = await response.json();
+        console.log(places);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        toggleLoader(false);
+      }
+    };
+    document
+      .getElementById("fetch-places-button")
+      ?.addEventListener("click", fetchPlaces);
+  </script>
+</Layout>
